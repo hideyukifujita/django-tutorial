@@ -1,9 +1,21 @@
 from django.shortcuts import render
-
 from django.http import HttpResponse
 
+from .models import Question
+
+
 def index(request):
-    return HttpResponse("Hello, world. You're at the polls index.")
+    """requestを受け取って、最新の5件の質問項目をカンマで区切り、日付順で表示する。
+
+    Args:
+        request (HttpRequest): HttpRequestオブジェクト
+
+    Returns:
+        HttpResponse: 文字列
+    """
+    latest_question_list = Question.objects.order_by("-pub_data")[:5]
+    output  = ", ".join([q.question_text for q in latest_question_list])
+    return HttpResponse(output)
 
 def detail(request, question_id):
     """request, question_idを受け取り、文字列を返す
