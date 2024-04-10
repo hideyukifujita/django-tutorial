@@ -3,7 +3,7 @@ from django.http import HttpResponse
 
 from .models import Question
 
-
+LATEST_QUESTION_ITEMS = 5
 def index(request):
     """requestを受け取って、最新の5件の質問項目を日付順でHTMLに表示する
 
@@ -13,8 +13,7 @@ def index(request):
     Returns:
         HttpResponse: HTML
     """
-    QUESTION_FIVE_ITEMS = 5
-    latest_question_list = Question.objects.order_by("-pub_data")[:QUESTION_FIVE_ITEMS]
+    latest_question_list = Question.objects.order_by("-pub_data")[:LATEST_QUESTION_ITEMS]
     context = {"latest_question_list": latest_question_list}
     return render(request, "polls/index.html", context)
 
