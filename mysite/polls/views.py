@@ -5,7 +5,7 @@ from .models import Question
 
 
 def index(request):
-    """requestを受け取って、最新の5件の質問項目を日付順でHTMLに表示する。
+    """requestを受け取って、最新の5件の質問項目を日付順でHTMLに表示する
 
     Args:
         request (HttpRequest): HttpRequestオブジェクト
