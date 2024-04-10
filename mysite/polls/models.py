@@ -4,8 +4,8 @@ from django.db import models
 from django.utils import timezone
 
 class Question(models.Model):
-    question_text = models.CharField(max_length=200)
-    pub_data = models.DateTimeField("data published")
+    question_text = models.CharField(max_length=200,  db_comment="質問文")
+    pub_data = models.DateTimeField("data published", db_comment="登録日")
     
     def __str__(self):
         """質問文を返す
@@ -24,9 +24,9 @@ class Question(models.Model):
         return self.pub_data >= timezone.now() - datetime.timedelta(days=1)
     
 class Choice(models.Model):
-    question = models.ForeignKey(Question, on_delete=models.CASCADE)
-    choice_text = models.CharField(max_length=200)
-    votes = models.IntegerField(default=0)
+    question = models.ForeignKey(Question, on_delete=models.CASCADE, db_comment="QustionとのKey")
+    choice_text = models.CharField(max_length=200, db_comment="選択肢")
+    votes = models.IntegerField(default=0, db_comment="投票数")
 
     def __str__(self):
         """選択文を返す

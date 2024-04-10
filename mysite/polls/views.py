@@ -50,7 +50,7 @@ def vote(request, question_id):
     Args:
         request (HttpRequest): HttpRequestオブジェクト
         question_id (int): 質問のid
-
+        
     Returns:
         HttpResponse: 文字列
     """
