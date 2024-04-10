@@ -13,7 +13,8 @@ def index(request):
     Returns:
         HttpResponse: HTML
     """
-    latest_question_list = Question.objects.order_by("-pub_data")[:5]
+    QUESTION_FIVE_ITEMS = 5
+    latest_question_list = Question.objects.order_by("-pub_data")[:QUESTION_FIVE_ITEMS]
     context = {"latest_question_list": latest_question_list}
     return render(request, "polls/index.html", context)
 
