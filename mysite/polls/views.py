@@ -1,49 +1,34 @@
 from django.db.models import F
 from django.shortcuts import render, get_object_or_404
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponseRedirect
 from django.urls import reverse
+from django.views import generic
 
 from .models import Question, Choice
 
 LATEST_QUESTION_ITEMS = 5
-def index(request):
-    """requestを受け取って、最新の5件の質問項目を日付順でHTMLに表示する
+class IndexView(generic.ListView):
+    template_name = "polls/index.html"
+    context_object_name = "latest_question_list"
 
-    Args:
-        request (HttpRequest): HttpRequestオブジェクト
+    def get_queryset(self):
+        """最新の5件の質問項目を日付順で返す
 
-    Returns:
-        HttpResponse: HTML
-    """
-    latest_question_list = Question.objects.order_by("-pub_data")[:LATEST_QUESTION_ITEMS]
-    context = {"latest_question_list": latest_question_list}
-    return render(request, "polls/index.html", context)
+        Returns:
+            Question: 質問項目
+        """
+        return Question.objects.order_by("-pub_data")[:LATEST_QUESTION_ITEMS]
+    
 
-def detail(request, question_id):
-    """request, question_idを受け取り、detail.htmlを表示
+class DetailView(generic.DetailView):
+    model = Question
+    template_name = "polls/detail.html"
 
-    Args:
-        request (HttpRequest): HttpRequestオブジェクト
-        question_id (int): 質問のid
 
-    Returns:
-        HttpResponse: HTML
-    """
-    question = get_object_or_404(Question, pk=question_id)
-    return render(request, "polls/detail.html", {"question": question})
+class ResultsView(generic.DetailView):
+    model = Question
+    template_name = "polls/results.html"
 
-def results(request, question_id):
-    """request, question_idを受け取り、results.htmlを表示
-
-    Args:
-        request (HttpRequest): HttpRequestオブジェクト
-        question_id (int): 質問のid
-
-    Returns:
-        HttpResponse: HTML
-    """
-    question = get_object_or_404(Question, pk=question_id)
-    return render(request, "polls/results.html", {"question": question})
 
 ADD_VOTES = 1
 def vote(request, question_id):
