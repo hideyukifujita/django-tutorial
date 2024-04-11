@@ -1,7 +1,9 @@
+from django.db.models import F
 from django.shortcuts import render, get_object_or_404
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
+from django.urls import reverse
 
-from .models import Question
+from .models import Question, Choice
 
 LATEST_QUESTION_ITEMS = 5
 def index(request):
@@ -43,14 +45,30 @@ def results(request, question_id):
     response = "You're looking at the results of question %s."
     return HttpResponse(response % question_id)
 
+ADD_VOTES = 1
 def vote(request, question_id):
-    """request, question_idを受け取り、文字列を返す
+    """request, question_idを受け取り、選択肢の投票数に+1し、results.htmlにリダイレクトする
 
     Args:
         request (HttpRequest): HttpRequestオブジェクト
         question_id (int): 質問のid
         
     Returns:
-        HttpResponse: 文字列
+        HttpResponseRedirect: HTML
     """
-    return HttpResponse("You're voting on question %s." % question_id)
+    question = get_object_or_404(Question, pk=question_id)
+    try:
+        selected_choice = question.choice_set.get(pk=request.POST["choice"])
+    except (KeyError, Choice.DoesNotExist):
+        return render(
+            request,
+            "polls/detail.html",
+            {
+                "question": question,
+                "error_message": "You didn't select a choice.",
+            },
+        )
+    else:
+        selected_choice.votes = F("votes") + ADD_VOTES
+        selected_choice.save()
+        return HttpResponseRedirect(reverse("polls:results", args=(question.id,)))
