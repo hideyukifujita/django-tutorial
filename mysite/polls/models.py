@@ -21,7 +21,8 @@ class Question(models.Model):
         Returns:
             bool: True or False
         """
-        return self.pub_data >= timezone.now() - datetime.timedelta(days=1)
+        now = timezone.now()
+        return now - datetime.timedelta(days=1) <= self.pub_data <= now
     
 class Choice(models.Model):
     question = models.ForeignKey(Question, on_delete=models.CASCADE, db_comment="QustionとのKey")
