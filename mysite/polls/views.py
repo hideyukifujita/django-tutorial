@@ -26,12 +26,20 @@ class DetailView(generic.DetailView):
     model = Question
     template_name = "polls/detail.html"
 
+    def get_queryset(self):
+        """現在以前の質問項目を返す
+
+        Returns:
+            Question: 質問項目
+        """
+        return Question.objects.filter(pub_data__lte=timezone.now())
+    
 
 class ResultsView(generic.DetailView):
     model = Question
     template_name = "polls/results.html"
 
-
+    
 ADD_VOTES = 1
 def vote(request, question_id):
     """request, question_idを受け取り、選択肢の投票数に+1し、results.htmlにリダイレクトする
