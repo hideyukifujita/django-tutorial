@@ -3,8 +3,10 @@ from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.views import generic
+from django.utils import timezone
 
 from .models import Question, Choice
+
 
 LATEST_QUESTION_ITEMS = 5
 class IndexView(generic.ListView):
@@ -17,7 +19,7 @@ class IndexView(generic.ListView):
         Returns:
             Question: 質問項目
         """
-        return Question.objects.order_by("-pub_data")[:LATEST_QUESTION_ITEMS]
+        return Question.objects.filter(pub_data__lte=timezone.now()).order_by("-pub_data")[:LATEST_QUESTION_ITEMS]
     
 
 class DetailView(generic.DetailView):
