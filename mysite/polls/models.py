@@ -3,6 +3,7 @@ import datetime
 from django.db import models
 from django.utils import timezone
 
+RECENTLY_DAYS = 1
 class Question(models.Model):
     question_text = models.CharField(max_length=200,  db_comment="質問文")
     pub_data = models.DateTimeField("data published", db_comment="登録日")
@@ -21,7 +22,8 @@ class Question(models.Model):
         Returns:
             bool: True or False
         """
-        return self.pub_data >= timezone.now() - datetime.timedelta(days=1)
+        now = timezone.now()
+        return now - datetime.timedelta(days=RECENTLY_DAYS) <= self.pub_data <= now
     
 class Choice(models.Model):
     question = models.ForeignKey(Question, on_delete=models.CASCADE, db_comment="QustionとのKey")
